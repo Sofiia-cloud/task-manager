@@ -19,27 +19,43 @@ function setTask(title, description, isCompleted) {
     title,
     description,
     isCompleted,
-    createdDate: new Date(),
+    createdDate: new Date().toLocaleDateString(),
     completedDate: null,
   });
   return tasks;
 }
 
 function completeTask(index) {
-  tasks[index].isCompleted = true;
-  tasks[index].completedDate = new Date();
-  completedTaskCount += 1;
-  completedTasks.push(tasks[index]);
-  deleteTask(index);
+  if (tasks[index]) {
+    tasks[index].isCompleted = true;
+    tasks[index].completedDate = new Date().toLocaleDateString();
+    completedTaskCount += 1;
+    completedTasks.push(tasks[index]);
+    deleteTask(index);
+  } else {
+    console.log("Нет задачи под этим номером!");
+  }
 }
 
 function deleteTask(index) {
-  if (tasks[index].isCompleted === true) {
-    tasks.splice(index, 1);
-  } else {
-    const answer = prompt("Таска еще не выполнена, удалить?");
-    if (answer === "Да" || answer === "да") {
+  if (tasks[index]) {
+    if (tasks[index].isCompleted === true) {
       tasks.splice(index, 1);
+    } else {
+      const answer = prompt("Таска еще не выполнена, удалить?");
+      if (answer === "Да" || answer === "да") {
+        tasks.splice(index, 1);
+      }
     }
+  } else {
+    console.log("Нет задачи под этим номером!");
+  }
+}
+
+function clearTasks() {
+  if (tasks.length !== 0) {
+    tasks.splice(0);
+  } else {
+    console.log("Нет текущих задач");
   }
 }
