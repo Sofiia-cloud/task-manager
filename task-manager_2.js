@@ -4,9 +4,11 @@ let completedTaskCount = 0;
 
 function showTask() {
   if (tasks.length !== 0) {
-    for (let i = 0; i < tasks.length; i++) {
-      console.log(Object.values(tasks[i]));
-    }
+    tasks.forEach((element) => {
+      console.log(
+        `Название задачи: ${element.title}, описание: ${element.description}, выполнено: ${element.isCompleted}, дата создания:${element.createdDate}, дата выполнения: ${element.completedDate}`,
+      );
+    });
   } else {
     console.log("Задачи отсутствуют");
   }
