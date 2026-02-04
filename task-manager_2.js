@@ -2,16 +2,22 @@ const tasks = [];
 const completedTasks = [];
 let completedTaskCount = 0;
 
-function showTask() {
-  if (tasks.length !== 0) {
-    tasks.forEach((element) => {
-      console.log(
-        `Название задачи: ${element.title}, описание: ${element.description}, выполнено: ${element.isCompleted}, дата создания:${element.createdDate}, дата выполнения: ${element.completedDate}`,
-      );
-    });
-  } else {
+function showTasks() {
+  if (!tasks.length) {
     console.log("Задачи отсутствуют");
+    return;
   }
+
+  tasks.forEach((task, index) => {
+    console.log(
+      `Задача №${index + 1} | ` +
+        `Название: ${task.title}, ` +
+        `Описание: ${task.description}, ` +
+        `Статус: ${task.isCompleted ? "Выполнено" : "В работе"}, ` +
+        `Создана: ${task.createdDate}, ` +
+        `Завершена: ${task.completedDate ? task.completedDate : "-"}`,
+    );
+  });
 }
 
 function setTask(title, description, isCompleted) {
@@ -26,36 +32,44 @@ function setTask(title, description, isCompleted) {
 }
 
 function completeTask(index) {
-  if (tasks[index]) {
-    tasks[index].isCompleted = true;
-    tasks[index].completedDate = new Date().toLocaleDateString();
+  let task = tasks[index];
+  if (task) {
+    task.isCompleted = true;
+    task.completedDate = new Date().toLocaleDateString();
     completedTaskCount += 1;
-    completedTasks.push(tasks[index]);
+    completedTasks.push(task);
     deleteTask(index);
-  } else {
-    console.log("Нет задачи под этим номером!");
+    return;
+  }
+  console.log("Нет задачи под этим номером!");
+}
+
+function allowDeletingTask(index) {
+  const answer = prompt("Таска еще не выполнена, удалить?");
+  if (answer === "Да" || answer === "да") {
+    tasks.splice(index, 1);
   }
 }
 
 function deleteTask(index) {
-  if (tasks[index]) {
-    if (tasks[index].isCompleted === true) {
+  let task = tasks[index];
+  if (task) {
+    if (task.isCompleted === true) {
       tasks.splice(index, 1);
     } else {
-      const answer = prompt("Таска еще не выполнена, удалить?");
-      if (answer === "Да" || answer === "да") {
-        tasks.splice(index, 1);
-      }
+      allowDeletingTask(index);
     }
-  } else {
-    console.log("Нет задачи под этим номером!");
+    return;
   }
+  console.log("Нет задачи под этим номером!");
 }
 
 function clearTasks() {
-  if (tasks.length !== 0) {
-    tasks.splice(0);
-  } else {
+  if (!tasks.length) {
     console.log("Нет текущих задач");
+    return;
   }
+  tasks.length = 0;
 }
+
+
