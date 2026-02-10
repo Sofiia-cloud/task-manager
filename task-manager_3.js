@@ -95,19 +95,43 @@ function clearTasks() {
   tasks.length = 0;
 }
 
-// function getTasksByDateRange(startDate, endDate, isCompleted = false) {
-//     if (isCompleted === true) {
-//         let filtered_tasks = tasks.filter(task => task.isCompleted === true && (task.createdDate === startDate || task.completedDate === endDate));
-//         return filtered_tasks;
-//     }
-//     let filtered_tasks = tasks.filter(task => task.createdDate === startDate || task.completedDate === endDate);
-//     return filtered_tasks;
-// }
+function getTasksByDateRange(startDate, endDate, isCompleted) {
+  if (!tasks.length) {
+    console.log("Нет текущих задач");
+    return;
+  }
+  let filtered_tasks = tasks.filter((task) => {
+    if (isCompleted && isCompleted !== task.isCompleted) {
+      return false;
+    }
+    const startDateRange =
+      task.createdDate >= new Date(startDate) &&
+      task.createdDate <= new Date(endDate);
+    const endDateRange = isCompleted
+      ? task.completedDate >= new Date(startDate) &&
+        task.completedDate <= new Date(endDate)
+      : false;
+    return startDateRange || endDateRange;
+  });
+  return filtered_tasks;
+}
 
-// setTask("reeeeeeeeeeeeeeeeeeeeeeee", "ad", false);
-// console.log(getTaskDescriptions());
-// setTask("r", "ad", false);
-// console.log(getTaskDescriptions());
-// console.log(getLongTasks());
+function clearShortTasks() {
+  if (!tasks.length) {
+    console.log("Нет текущих задач");
+    return;
+  }
+  let short_tasks = tasks.filter((task) => task.title.length >= 5);
+  tasks.length = 0;
+  tasks.push(...short_tasks);
+  return tasks;
+}
 
-
+function updateTaskTitle(index, newTitle) {
+  if (index >= tasks.length) {
+    console.log("Нет задачи под таким номером");
+    return;
+  }
+  tasks[index].title = newTitle;
+  return tasks;
+}
