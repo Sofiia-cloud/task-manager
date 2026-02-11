@@ -9,16 +9,21 @@ function showTasks() {
     return;
   }
 
-  tasks.forEach((task, index) => {
-    console.log(
-      `Задача №${index + 1} | ` +
-        `Название: ${task.title}, ` +
-        `Описание: ${task.description}, ` +
-        `Статус: ${task.isCompleted ? "Выполнено" : "В работе"}, ` +
-        `Создана: ${task.createdDate}, ` +
-        `Завершена: ${task.completedDate ? task.completedDate : "-"}`,
-    );
-  });
+  tasks.forEach(
+    (
+      { title, description, isCompleted, createdDate, completedDate },
+      index,
+    ) => {
+      console.log(
+        `Задача №${index + 1} | ` +
+          `Название: ${title}, ` +
+          `Описание: ${description}, ` +
+          `Статус: ${isCompleted ? "Выполнено" : "В работе"}, ` +
+          `Создана: ${createdDate}, ` +
+          `Завершена: ${completedDate ? completedDate : "-"}`,
+      );
+    },
+  );
 }
 
 function setTask(title, description, isCompleted) {
@@ -67,24 +72,26 @@ function completeTask(index) {
   console.log("Нет задачи под этим номером!");
 }
 
-function allowDeletingTask(index) {
+function allowDeletingTask() {
   const answer = prompt("Таска еще не выполнена, удалить?");
   if (answer === "Да" || answer === "да") {
-    tasks.splice(index, 1);
+    return true;
   }
+  return false;
 }
 
 function deleteTask(index) {
   let task = tasks[index];
-  if (task) {
-    if (task.isCompleted === true) {
-      tasks.splice(index, 1);
-    } else {
-      allowDeletingTask(index);
-    }
+  if (!task) {
+    console.log("Нет задачи под этим номером!");
     return;
   }
-  console.log("Нет задачи под этим номером!");
+
+  if (task.isCompleted || allowDeletingTask()) {
+    tasks.splice(index, 1);
+  } else {
+    console.log("Отмена удаления");
+  }
 }
 
 function clearTasks() {
@@ -96,6 +103,8 @@ function clearTasks() {
 }
 
 function getTasksByDateRange(startDate, endDate, isCompleted) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
   if (!tasks.length) {
     console.log("Нет текущих задач");
     return;
@@ -104,12 +113,9 @@ function getTasksByDateRange(startDate, endDate, isCompleted) {
     if (isCompleted && isCompleted !== task.isCompleted) {
       return false;
     }
-    const startDateRange =
-      task.createdDate >= new Date(startDate) &&
-      task.createdDate <= new Date(endDate);
+    const startDateRange = task.createdDate >= start && task.createdDate <= end;
     const endDateRange = isCompleted
-      ? task.completedDate >= new Date(startDate) &&
-        task.completedDate <= new Date(endDate)
+      ? task.completedDate >= start && task.completedDate <= end
       : false;
     return startDateRange || endDateRange;
   });
